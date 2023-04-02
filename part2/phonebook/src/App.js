@@ -3,12 +3,14 @@ import Persons from "./components/Persons";
 import PersonForm from "./components/PersonForm";
 import Filter from "./components/Filter";
 import personService from "./services/persons";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newPerson, setNewPerson] = useState({ name: "", number: "" });
   const [filter, setFilter] = useState("");
   const [personsToShow, setPersonsToShow] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
@@ -16,6 +18,15 @@ const App = () => {
       setPersonsToShow(initialPersons);
     });
   }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setErrorMessage(null);
+    }, 5000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [errorMessage]);
 
   const addPerson = (event) => {
     event.preventDefault();
@@ -27,6 +38,7 @@ const App = () => {
       personService.create(newPerson).then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson));
         setPersonsToShow(persons.concat(returnedPerson));
+        setErrorMessage(`Added ${newPerson.name} to phonebook`);
       });
     } else {
       if (
@@ -47,7 +59,13 @@ const App = () => {
                 person.id !== currentPerson[0].id ? person : returnedPerson
               )
             );
-          });
+            setErrorMessage(`Updated ${newPerson.name}'s number`);
+          })
+          .catch((error) =>
+            setErrorMessage(
+              `Information of ${newPerson.name} has already been removed from server`
+            )
+          );
       }
     }
     setNewPerson({ name: "", number: "" });
@@ -69,16 +87,25 @@ const App = () => {
 
   const deletePerson = (id, name) => {
     if (window.confirm(`Delete ${name}?`)) {
-      personService.remove(id).then((response) => {
-        setPersons(persons.filter((person) => person.id !== id));
-        setPersonsToShow(persons.filter((person) => person.id !== id));
-      });
+      personService
+        .remove(id)
+        .then((response) => {
+          setPersons(persons.filter((person) => person.id !== id));
+          setPersonsToShow(persons.filter((person) => person.id !== id));
+          setErrorMessage(`Removed ${name} from phonebook`);
+        })
+        .catch((error) =>
+          setErrorMessage(
+            `Information of ${name} has already been removed from server`
+          )
+        );
     }
   };
 
   return (
     <>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
 
       <Filter filter={filter} filterPersons={filterPersons} />
 

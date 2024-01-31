@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 const Persons = ({ personsToShow, deletePerson }) => {
   return (
     <div>
@@ -11,7 +10,7 @@ const Persons = ({ personsToShow, deletePerson }) => {
         </div>
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default Persons;
+export default Persons

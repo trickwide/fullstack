@@ -3,7 +3,7 @@ const Filter = ({ filter, filterPersons }) => {
     <div>
       filter shown with <input value={filter} onChange={filterPersons} />
     </div>
-  );
-};
+  )
+}
 
-export default Filter;
+export default Filter

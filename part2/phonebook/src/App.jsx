@@ -11,6 +11,7 @@ const App = () => {
   const [filter, setFilter] = useState("");
   const [personsToShow, setPersonsToShow] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
@@ -35,11 +36,18 @@ const App = () => {
     );
 
     if (currentPerson.length === 0) {
-      personService.create(newPerson).then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson));
-        setPersonsToShow(persons.concat(returnedPerson));
-        setErrorMessage(`Added ${newPerson.name} to phonebook`);
-      });
+      personService
+        .create(newPerson)
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson));
+          setPersonsToShow(persons.concat(returnedPerson));
+          setErrorMessage(`Added ${newPerson.name} to phonebook`);
+          setIsError(false);
+        })
+        .catch((error) => {
+          setErrorMessage(error.response.data.error);
+          setIsError(true);
+        });
     } else {
       if (
         window.confirm(
@@ -60,12 +68,14 @@ const App = () => {
               )
             );
             setErrorMessage(`Updated ${newPerson.name}'s number`);
+            setIsError(false);
           })
-          .catch((error) =>
+          .catch((error) => {
             setErrorMessage(
               `Information of ${newPerson.name} has already been removed from server`
-            )
-          );
+            );
+            setIsError(true);
+          });
       }
     }
     setNewPerson({ name: "", number: "" });
@@ -93,19 +103,24 @@ const App = () => {
           setPersons(persons.filter((person) => person.id !== id));
           setPersonsToShow(persons.filter((person) => person.id !== id));
           setErrorMessage(`Removed ${name} from phonebook`);
+          setIsError(false);
         })
-        .catch((error) =>
+        .catch((error) => {
           setErrorMessage(
             `Information of ${name} has already been removed from server`
-          )
-        );
+          );
+          setIsError(true);
+        });
     }
   };
 
   return (
     <>
       <h2>Phonebook</h2>
-      <Notification message={errorMessage} />
+      <Notification
+        message={errorMessage}
+        type={isError ? "error" : "success"}
+      />
 
       <Filter filter={filter} filterPersons={filterPersons} />
 

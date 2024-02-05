@@ -37,12 +37,7 @@ describe('GET-requests', () => {
 
 describe('POST-requests', () => {
   test('New blog is added succesfully and total number of blogs is increased by one', async () => {
-    const newBlog = {
-      title: 'Test blog',
-      author: 'Test author',
-      url: 'http://www.test.com',
-      likes: 0,
-    }
+    const newBlog = helper.newBlog
 
     await api
       .post('/api/blogs')
@@ -56,12 +51,7 @@ describe('POST-requests', () => {
   })
 
   test('New blog is added with correct content', async () => {
-    const newBlog = {
-      title: 'Test blog',
-      author: 'Test author',
-      url: 'http://www.test.com',
-      likes: 0,
-    }
+    const newBlog = helper.newBlog
 
     await api
       .post('/api/blogs')
@@ -80,6 +70,27 @@ describe('POST-requests', () => {
     expect(addedBlog.author).toBe(newBlog.author)
     expect(addedBlog.url).toBe(newBlog.url)
     expect(addedBlog.likes).toBe(newBlog.likes)
+  })
+
+  test('Likes are set to 0 if missing from the request', async () => {
+    const newBlogWithoutLikes = {
+      title: 'Test blog without likes',
+      author: 'Test author without likes',
+      url: 'http://www.test.com/withoutlikes',
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlogWithoutLikes)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const response = await api.get('/api/blogs')
+    const addedBlog = response.body.find(
+      (blog) => blog.title === newBlogWithoutLikes.title
+    )
+    expect(addedBlog.likes).toBeDefined()
+    expect(addedBlog.likes).toBe(0)
   })
 })
 

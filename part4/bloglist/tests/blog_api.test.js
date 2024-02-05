@@ -35,7 +35,7 @@ describe('GET-requests', () => {
   })
 })
 
-describe('POST-requests', () => {
+describe('Successful POST-requests', () => {
   test('New blog is added succesfully and total number of blogs is increased by one', async () => {
     const newBlog = helper.newBlog
 
@@ -91,6 +91,28 @@ describe('POST-requests', () => {
     )
     expect(addedBlog.likes).toBeDefined()
     expect(addedBlog.likes).toBe(0)
+  })
+})
+
+describe('Unsuccessful POST-requests', () => {
+  test('Title is missing and respond is 400 Bad Rqeuest', async () => {
+    const newBlogWithoutTitle = {
+      author: 'Test author without title and url',
+      url: 'http://www.test.com/withouttitle',
+      likes: 0,
+    }
+
+    await api.post('/api/blogs').send(newBlogWithoutTitle).expect(400)
+  })
+
+  test('URL is missing and respond is 400 Bad Rqeuest', async () => {
+    const newBlogWithoutUrl = {
+      title: 'Test blog without url',
+      author: 'Test author without url',
+      likes: 0,
+    }
+
+    await api.post('/api/blogs').send(newBlogWithoutUrl).expect(400)
   })
 })
 

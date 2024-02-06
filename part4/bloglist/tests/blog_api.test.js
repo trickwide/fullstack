@@ -116,6 +116,20 @@ describe('Unsuccessful POST-requests', () => {
   })
 })
 
+describe('DELETE-requests', () => {
+  test('Blog is deleted succesfully and total number of blogs is decreased by one', async () => {
+    const response = await api.get('/api/blogs')
+    const blogsBeforeDelete = response.body
+
+    await api.delete(`/api/blogs/${blogsBeforeDelete[0].id}`).expect(204)
+
+    const responseAfterDelete = await api.get('/api/blogs')
+    const blogsAfterDelete = responseAfterDelete.body
+
+    expect(blogsAfterDelete).toHaveLength(blogsBeforeDelete.length - 1)
+  })
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })

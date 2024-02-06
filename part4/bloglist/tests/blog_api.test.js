@@ -130,6 +130,27 @@ describe('DELETE-requests', () => {
   })
 })
 
+describe('PUT-requests', () => {
+  test('Likes are updated succesfully', async () => {
+    const response = await api.get('/api/blogs')
+    const blogsBeforePut = response.body
+
+    const updatedBlog = {
+      likes: 25,
+    }
+
+    await api
+      .put(`/api/blogs/${blogsBeforePut[0].id}`)
+      .send(updatedBlog)
+      .expect(200)
+
+    const responseAfterPut = await api.get('/api/blogs')
+    const blogsAfterPut = responseAfterPut.body
+
+    expect(blogsAfterPut[0].likes).toBe(updatedBlog.likes)
+  })
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })

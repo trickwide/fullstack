@@ -128,6 +128,10 @@ describe('DELETE-requests', () => {
 
     expect(blogsAfterDelete).toHaveLength(blogsBeforeDelete.length - 1)
   })
+
+  test('Invalid id is given and respond is 400 Bad Request', async () => {
+    await api.delete('/api/blogs/invalidid').expect(400)
+  })
 })
 
 describe('PUT-requests', () => {
@@ -148,6 +152,14 @@ describe('PUT-requests', () => {
     const blogsAfterPut = responseAfterPut.body
 
     expect(blogsAfterPut[0].likes).toBe(updatedBlog.likes)
+  })
+
+  test('Invalid id is given and respond is 400 Bad Request', async () => {
+    const updatedBlog = {
+      likes: 25,
+    }
+
+    await api.put('/api/blogs/invalidid').send(updatedBlog).expect(400)
   })
 })
 

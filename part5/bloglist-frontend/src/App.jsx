@@ -2,18 +2,29 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import loginService from './services/login'
 import blogService from './services/blogs'
+import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [newBlog, setNewBlog] = useState('')
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
+  const [isError, setIsError] = useState(false)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setErrorMessage(null)
+    }, 5000)
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [errorMessage])
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
@@ -43,7 +54,8 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      console.log('Wrong credentials')
+      setErrorMessage('Wrong username or password')
+      setIsError(true)
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
@@ -93,6 +105,8 @@ const App = () => {
       setAuthor('')
       setUrl('')
     })
+    setErrorMessage(`a new blog ${title} by ${author} added`)
+    setIsError(false)
   }
 
   const blogForm = () => (
@@ -134,6 +148,10 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
+        <Notification
+          message={errorMessage}
+          type={isError ? 'error' : 'success'}
+        />
         {loginForm()}
       </div>
     )
@@ -142,6 +160,10 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <Notification
+        message={errorMessage}
+        type={isError ? 'error' : 'success'}
+      />
       <h3>
         {user.username} logged in <button onClick={handleLogout}>logout</button>
       </h3>

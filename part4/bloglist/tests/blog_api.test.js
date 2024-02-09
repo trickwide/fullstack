@@ -37,24 +37,31 @@ describe('GET-requests', () => {
 
 describe('Successful POST-requests', () => {
   test('New blog is added succesfully and total number of blogs is increased by one', async () => {
+    const token = await helper.getTokenForUser()
+
     const newBlog = helper.newBlog
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
     const response = await api.get('/api/blogs')
+    const blogsAfterPost = response.body
 
-    expect(response.body).toHaveLength(helper.initialBlogs.length + 1)
+    expect(blogsAfterPost).toHaveLength(helper.initialBlogs.length + 1)
   })
 
   test('New blog is added with correct content', async () => {
+    const token = await helper.getTokenForUser()
+
     const newBlog = helper.newBlog
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -73,6 +80,8 @@ describe('Successful POST-requests', () => {
   })
 
   test('Likes are set to 0 if missing from the request', async () => {
+    const token = await helper.getTokenForUser()
+
     const newBlogWithoutLikes = {
       title: 'Test blog without likes',
       author: 'Test author without likes',
@@ -81,6 +90,7 @@ describe('Successful POST-requests', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlogWithoutLikes)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -96,32 +106,49 @@ describe('Successful POST-requests', () => {
 
 describe('Unsuccessful POST-requests', () => {
   test('Title is missing and respond is 400 Bad Rqeuest', async () => {
+    const token = await helper.getTokenForUser()
+
     const newBlogWithoutTitle = {
       author: 'Test author without title and url',
       url: 'http://www.test.com/withouttitle',
       likes: 0,
     }
 
-    await api.post('/api/blogs').send(newBlogWithoutTitle).expect(400)
+    await api
+      .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      .send(newBlogWithoutTitle)
+      .expect(400)
   })
 
   test('URL is missing and respond is 400 Bad Rqeuest', async () => {
+    const token = await helper.getTokenForUser()
+
     const newBlogWithoutUrl = {
       title: 'Test blog without url',
       author: 'Test author without url',
       likes: 0,
     }
 
-    await api.post('/api/blogs').send(newBlogWithoutUrl).expect(400)
+    await api
+      .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      .send(newBlogWithoutUrl)
+      .expect(400)
   })
 })
 
 describe('DELETE-requests', () => {
   test('Blog is deleted succesfully and total number of blogs is decreased by one', async () => {
+    const token = await helper.getTokenForUser()
+
     const response = await api.get('/api/blogs')
     const blogsBeforeDelete = response.body
 
-    await api.delete(`/api/blogs/${blogsBeforeDelete[0].id}`).expect(204)
+    await api
+      .delete(`/api/blogs/${blogsBeforeDelete[2].id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(204)
 
     const responseAfterDelete = await api.get('/api/blogs')
     const blogsAfterDelete = responseAfterDelete.body
@@ -130,7 +157,19 @@ describe('DELETE-requests', () => {
   })
 
   test('Invalid id is given and respond is 400 Bad Request', async () => {
-    await api.delete('/api/blogs/invalidid').expect(400)
+    const token = await helper.getTokenForUser()
+
+    await api
+      .delete('/api/blogs/invalidid')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(400)
+  })
+
+  test('Unauthorized user tries to delete a blog and respond is 401 Unauthorized', async () => {
+    const response = await api.get('/api/blogs')
+    const blogsBeforeDelete = response.body
+
+    await api.delete(`/api/blogs/${blogsBeforeDelete[2].id}`).expect(401)
   })
 })
 

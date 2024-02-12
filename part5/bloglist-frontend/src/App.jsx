@@ -16,6 +16,7 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [blogVisible, setBlogVisible] = useState(false)
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -107,42 +108,53 @@ const App = () => {
     })
     setErrorMessage(`a new blog ${title} by ${author} added`)
     setIsError(false)
+    setBlogVisible(false)
   }
 
-  const blogForm = () => (
-    <>
-      <h2>create new</h2>
-      <form onSubmit={addBlog}>
-        <div>
-          title:
-          <input
-            type='text'
-            value={title}
-            name='Title'
-            onChange={({ target }) => setTitle(target.value)}
-          />
+  const blogForm = () => {
+    const hideWhenVisible = { display: blogVisible ? 'none' : '' }
+    const showWhenVisible = { display: blogVisible ? '' : 'none' }
+    return (
+      <div>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setBlogVisible(true)}>new blog</button>
         </div>
-        <div>
-          author:
-          <input
-            type='text'
-            value={author}
-            name='Author'
-            onChange={({ target }) => setAuthor(target.value)}
-          />
+        <div style={showWhenVisible}>
+          <h2>create new</h2>
+          <form onSubmit={addBlog}>
+            <div>
+              title:
+              <input
+                type='text'
+                value={title}
+                name='Title'
+                onChange={({ target }) => setTitle(target.value)}
+              />
+            </div>
+            <div>
+              author:
+              <input
+                type='text'
+                value={author}
+                name='Author'
+                onChange={({ target }) => setAuthor(target.value)}
+              />
+            </div>
+            <div>
+              url:
+              <input
+                type='text'
+                value={url}
+                onChange={({ target }) => setUrl(target.value)}
+              />
+            </div>
+            <button type='submit'>create</button>
+          </form>
+          <button onClick={() => setBlogVisible(false)}>cancel</button>
         </div>
-        <div>
-          url:
-          <input
-            type='text'
-            value={url}
-            onChange={({ target }) => setUrl(target.value)}
-          />
-        </div>
-        <button type='submit'>create</button>
-      </form>
-    </>
-  )
+      </div>
+    )
+  }
 
   if (user === null) {
     return (

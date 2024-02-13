@@ -23,7 +23,6 @@ const Blog = ({ blog, updateLikes, removeBlog, user }) => {
   const handleDelete = async () => {
     removeBlog()
   }
-  console.log(user.username, blog.user.username)
 
   return (
     <div style={blogStyle}>

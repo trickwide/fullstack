@@ -91,10 +91,10 @@ const App = () => {
         await blogService.remove(id)
         setErrorMessage(`Blog '${blog.title}' removed successfully.`)
         setIsError(false)
-      } catch (exception) {
+      } catch (error) {
         setBlogs(blogs)
         setErrorMessage(
-          `Failed to remove blog '${blogToRemove.title}'. Error: ${error.message}`
+          `Failed to remove blog '${blog.title}'. Error: ${error.message}`
         )
         setIsError(true)
       }

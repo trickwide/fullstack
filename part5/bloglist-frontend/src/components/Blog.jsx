@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
+import blogService from '../services/blogs'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateLikes }) => {
   const [visible, setVisible] = useState(false)
 
   const blogStyle = {
@@ -15,6 +16,10 @@ const Blog = ({ blog }) => {
     setVisible(!visible)
   }
 
+  const handleLike = async () => {
+    updateLikes()
+  }
+
   return (
     <div style={blogStyle}>
       {blog.title} {blog.author}{' '}
@@ -23,7 +28,7 @@ const Blog = ({ blog }) => {
         <div>
           {blog.url}
           <div>
-            likes {blog.likes} <button>like</button>
+            likes {blog.likes} <button onClick={handleLike}>like</button>
           </div>
           <div>{blog.user.username}</div>
         </div>

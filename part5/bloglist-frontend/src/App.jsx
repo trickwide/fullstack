@@ -82,6 +82,25 @@ const App = () => {
     }
   }
 
+  const removeBlog = async (id) => {
+    const blog = blogs.find((blog) => blog.id === id)
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      setBlogs(blogs.filter((blog) => blog.id !== id))
+
+      try {
+        await blogService.remove(id)
+        setErrorMessage(`Blog '${blog.title}' removed successfully.`)
+        setIsError(false)
+      } catch (exception) {
+        setBlogs(blogs)
+        setErrorMessage(
+          `Failed to remove blog '${blogToRemove.title}'. Error: ${error.message}`
+        )
+        setIsError(true)
+      }
+    }
+  }
+
   const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
 
   const loginForm = () => (
@@ -156,6 +175,8 @@ const App = () => {
           key={blog.id}
           blog={blog}
           updateLikes={() => updateLikes(blog.id)}
+          removeBlog={() => removeBlog(blog.id)}
+          user={user}
         />
       ))}
     </div>

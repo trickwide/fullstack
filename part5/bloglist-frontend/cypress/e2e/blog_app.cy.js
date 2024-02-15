@@ -98,6 +98,29 @@ describe('Blog app', function () {
         cy.contains('view').click()
         cy.get('.blog').should('not.contain', 'remove')
       })
+
+      it('Blogs are ordered by likes', function () {
+        cy.createBlog({
+          title: 'Everyone loves Raymond',
+          author: 'Ray Romano',
+          url: 'https://www.imdb.com/title/tt0115167/',
+        })
+        cy.createBlog({
+          title: 'The Big Bang Theory',
+          author: 'Chuck Lorre',
+          url: 'https://www.imdb.com/title/tt0898266/',
+        })
+
+        cy.contains('The Big Bang Theory').contains('view').click()
+        cy.contains('The Big Bang Theory').contains('like').click()
+        cy.contains('The Big Bang Theory').contains('like').click()
+        cy.contains('The Big Bang Theory').contains('like').click()
+
+        cy.reload()
+
+        cy.get('.blog').eq(0).contains('The Big Bang Theory')
+        cy.get('.blog').eq(1).contains('Everyone loves Raymond')
+      })
     })
   })
 })

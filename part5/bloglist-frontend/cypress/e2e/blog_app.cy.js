@@ -49,6 +49,18 @@ describe('Blog app', function () {
 
         cy.contains('Everyone loves Raymond')
       })
+
+      it('A blog can be liked', function () {
+        cy.createBlog({
+          title: 'Everyone loves Raymond',
+          author: 'Ray Romano',
+          url: 'https://www.imdb.com/title/tt0115167/',
+        })
+
+        cy.contains('view').click()
+        cy.contains('like').click()
+        cy.contains('likes 1')
+      })
     })
   })
 })

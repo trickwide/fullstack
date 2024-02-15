@@ -61,6 +61,43 @@ describe('Blog app', function () {
         cy.contains('like').click()
         cy.contains('likes 1')
       })
+
+      it('A blog can be deleted by the user who created it', function () {
+        cy.createBlog({
+          title: 'Everyone loves Raymond',
+          author: 'Ray Romano',
+          url: 'https://www.imdb.com/title/tt0115167/',
+        })
+
+        cy.contains('view').click()
+        cy.contains('remove').click()
+        cy.get('.success').contains(
+          // eslint-disable-next-line quotes
+          "Blog 'Everyone loves Raymond' removed successfully."
+        )
+      })
+
+      it('A blog cannot be deleted by another user', function () {
+        cy.createBlog({
+          title: 'Everyone loves Raymond',
+          author: 'Ray Romano',
+          url: 'https://www.imdb.com/title/tt0115167/',
+        })
+
+        cy.contains('logout').click()
+
+        const user = {
+          name: 'Another User',
+          username: 'auser',
+          password: 'secret',
+        }
+        cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
+
+        cy.login({ username: 'auser', password: 'secret' })
+
+        cy.contains('view').click()
+        cy.get('.blog').should('not.contain', 'remove')
+      })
     })
   })
 })

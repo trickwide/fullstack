@@ -8,7 +8,7 @@ const AnecdoteList = () => {
   const dispatch = useDispatch()
 
   const vote = (id) => {
-    dispatch(voteFor(id))
+    dispatch(voteFor({ id }))
   }
 
   const filteredAnecdotes = filter
@@ -17,7 +17,9 @@ const AnecdoteList = () => {
       )
     : anecdotes
 
-  const sortedAnecdotes = filteredAnecdotes.sort((a, b) => b.votes - a.votes)
+  const sortedAnecdotes = [...filteredAnecdotes].sort(
+    (a, b) => b.votes - a.votes
+  )
 
   return (
     <div>

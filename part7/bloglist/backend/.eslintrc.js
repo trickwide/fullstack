@@ -5,7 +5,7 @@ module.exports = {
     node: true,
     jest: true,
   },
-  extends: "eslint:recommended",
+  extends: ["eslint:recommended", "prettier"],
   parserOptions: {
     ecmaVersion: "latest",
   },
@@ -19,5 +19,7 @@ module.exports = {
     "object-curly-spacing": ["error", "always"],
     "arrow-spacing": ["error", { before: true, after: true }],
     "no-console": 0,
+    "prettier/prettier": "error",
   },
+  plugins: ["prettier"],
 };

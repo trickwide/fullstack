@@ -68,53 +68,6 @@ const App = () => {
     setUser(null)
   }
 
-  const updateLikes = async (id) => {
-    const blog = blogs.find((blog) => blog.id === id)
-    const updatedBlog = {
-      ...blog,
-      likes: blog.likes + 1,
-    }
-    const returnedBlog = await blogService.update(id, updatedBlog)
-    if (returnedBlog) {
-      setBlogs(
-        blogs.map((blog) =>
-          blog.id === id ? { ...blog, likes: returnedBlog.likes } : blog,
-        ),
-      )
-    }
-  }
-
-  const removeBlog = async (id) => {
-    const blog = blogs.find((blog) => blog.id === id)
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      setBlogs(blogs.filter((blog) => blog.id !== id))
-
-      try {
-        await blogService.remove(id)
-        dispatch(
-          setNotification(
-            {
-              message: `Blog '${blog.title}' removed successfully.`,
-              isError: false,
-            },
-            5,
-          ),
-        )
-      } catch (error) {
-        setBlogs(blogs)
-        dispatch(
-          setNotification(
-            {
-              message: `Failed to remove blog '${blog.title}'. Error: ${error.message}`,
-              isError: true,
-            },
-            5,
-          ),
-        )
-      }
-    }
-  }
-
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
 
   const loginForm = () => (
@@ -164,13 +117,7 @@ const App = () => {
       </h3>
       <BlogForm />
       {sortedBlogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          updateLikes={() => updateLikes(blog.id)}
-          removeBlog={() => removeBlog(blog.id)}
-          user={user}
-        />
+        <Blog key={blog.id} blog={blog} user={user} />
       ))}
     </div>
   )

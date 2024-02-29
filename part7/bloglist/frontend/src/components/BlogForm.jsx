@@ -35,6 +35,7 @@ const BlogForm = () => {
         5,
       ),
     )
+    blogFormRef.current.toggleVisibility()
   }
 
   return (

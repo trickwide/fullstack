@@ -4,7 +4,6 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Link,
   Navigate,
 } from 'react-router-dom'
 import BlogList from './components/BlogList'
@@ -41,9 +40,9 @@ const App = () => {
           </>
         ) : (
           <>
+            <UserHeader username={user.username} />
             <h2>blogs</h2>
             <Notification />
-            <UserHeader username={user.username} />
             <Routes>
               <Route
                 path="/"

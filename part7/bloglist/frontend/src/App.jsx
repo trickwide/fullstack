@@ -10,7 +10,7 @@ import { initializeUser, logout } from './reducers/authReducer'
 const App = () => {
   const dispatch = useDispatch()
   const blogs = useSelector((state) => state.blogs)
-  const user = useSelector((state) => state.auth)
+  const user = useSelector((state) => state.auth.user)
 
   useEffect(() => {
     dispatch(initializeUser())

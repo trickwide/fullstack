@@ -1,11 +1,20 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Blog from './components/Blog'
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  Navigate,
+} from 'react-router-dom'
+import BlogList from './components/BlogList'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import { initializeBlogs } from './reducers/blogReducer'
-import { initializeUser, logout } from './reducers/authReducer'
+import { initializeUser } from './reducers/authReducer'
+import UserHeader from './components/UserHeader'
+import Users from './components/Users'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -19,33 +28,39 @@ const App = () => {
 
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
 
-  const handleLogout = async (event) => {
-    event.preventDefault()
-    dispatch(logout())
-  }
-
-  if (user === null) {
-    return (
-      <div>
-        <h2>Log in to application</h2>
-        <Notification />
-        <LoginForm />
-      </div>
-    )
-  }
-
   return (
-    <div>
-      <h2>blogs</h2>
-      <Notification />
-      <h3>
-        {user.username} logged in <button onClick={handleLogout}>logout</button>
-      </h3>
-      <BlogForm />
-      {sortedBlogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} user={user} />
-      ))}
-    </div>
+    <Router>
+      <div>
+        {user === null ? (
+          <>
+            <h2>Log in to application</h2>
+            <Notification />
+            <LoginForm />
+          </>
+        ) : (
+          <>
+            <h2>blogs</h2>
+            <Notification />
+            <UserHeader username={user.username} />
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <>
+                    <BlogForm />
+                    <BlogList blogs={sortedBlogs} user={user} />
+                  </>
+                }
+              />
+              <Route
+                path="/users"
+                element={user ? <Users /> : <Navigate replace to="/login" />}
+              />
+            </Routes>
+          </>
+        )}
+      </div>
+    </Router>
   )
 }
 

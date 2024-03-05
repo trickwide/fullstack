@@ -15,6 +15,7 @@ import { initializeBlogs } from './reducers/blogReducer'
 import { initializeUser } from './reducers/authReducer'
 import UserHeader from './components/UserHeader'
 import Users from './components/Users'
+import User from './components/User'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -56,6 +57,7 @@ const App = () => {
                 path="/users"
                 element={user ? <Users /> : <Navigate replace to="/login" />}
               />
+              <Route path="/users/:id" element={<User />} />
             </Routes>
           </>
         )}

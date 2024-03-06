@@ -41,7 +41,7 @@ const App = () => {
         ) : (
           <>
             <UserHeader username={user.username} />
-            <h2>blogs</h2>
+            <h1>Blog App</h1>
             <Notification />
             <Routes>
               <Route

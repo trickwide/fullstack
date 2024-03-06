@@ -1,6 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { likeBlogs } from '../reducers/blogReducer'
+import Comment from './Comment'
+import { useEffect } from 'react'
+import { initializeComments } from '../reducers/commentReducer'
 
 const BlogInfo = () => {
   const dispatch = useDispatch()
@@ -8,9 +11,11 @@ const BlogInfo = () => {
   const id = useParams().id
   const blog = blogs.find((blog) => blog.id === id)
 
-  if (!blog) {
-    return null
-  }
+  useEffect(() => {
+    if (id) {
+      dispatch(initializeComments(id))
+    }
+  }, [dispatch, id])
 
   const handleLike = () => {
     const updatedBlog = {
@@ -18,6 +23,9 @@ const BlogInfo = () => {
       likes: blog.likes + 1,
     }
     dispatch(likeBlogs(updatedBlog))
+  }
+  if (!blog) {
+    return null
   }
 
   return (
@@ -28,6 +36,7 @@ const BlogInfo = () => {
         {blog.likes} likes <button onClick={handleLike}>like</button>
       </div>
       <div>added by {blog.user.name}</div>
+      <Comment id={blog.id} />
     </div>
   )
 }

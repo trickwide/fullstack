@@ -3,6 +3,7 @@ import { createBlogs } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import { useRef } from 'react'
 import Togglable from './Togglable'
+import { Box, Button, TextField, Typography } from '@mui/material'
 
 const BlogForm = () => {
   const dispatch = useDispatch()
@@ -40,36 +41,33 @@ const BlogForm = () => {
 
   return (
     <Togglable buttonLabel="create new" ref={blogFormRef}>
-      <div>
-        <h2>create new</h2>
+      <Box>
+        <Typography variant="h3">create new</Typography>
         <form onSubmit={addBlog}>
-          <div>
-            title:
-            <input
-              id="title"
-              type="text"
-              name="Title"
-              placeholder="Blog title"
-            />
-          </div>
-          <div>
-            author:
-            <input
+          <Box sx={{ mb: 2 }}>
+            <TextField id="title" type="text" name="Title" label="Blog title" />
+          </Box>
+          <Box sx={{ mb: 2 }}>
+            <TextField
               id="author"
               type="text"
               name="Author"
-              placeholder="Blog author"
+              label="Blog author"
             />
-          </div>
-          <div>
-            url:
-            <input id="url" type="text" name="Url" placeholder="Blog url" />
-          </div>
-          <button id="create-button" type="submit">
+          </Box>
+          <Box sx={{ mb: 2 }}>
+            <TextField id="url" type="text" name="Url" label="Blog url" />
+          </Box>
+          <Button
+            sx={{ mb: 2 }}
+            variant="contained"
+            id="create-button"
+            type="submit"
+          >
             create
-          </button>
+          </Button>
         </form>
-      </div>
+      </Box>
     </Togglable>
   )
 }

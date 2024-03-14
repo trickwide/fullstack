@@ -6,6 +6,7 @@ import {
   Route,
   Navigate,
 } from 'react-router-dom'
+import { Typography } from '@mui/material'
 import BlogList from './components/BlogList'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
@@ -34,14 +35,18 @@ const App = () => {
       <div>
         {user === null ? (
           <>
-            <h2>Log in to application</h2>
+            <Typography variant="h4" sx={{ marginTop: 2, marginBottom: 2 }}>
+              Log in to application
+            </Typography>
             <Notification />
             <LoginForm />
           </>
         ) : (
           <>
             <UserHeader username={user.username} />
-            <h1>Blog App</h1>
+            <Typography variant="h2" sx={{ marginTop: 2, marginBottom: 2 }}>
+              Blog App
+            </Typography>
             <Notification />
             <Routes>
               <Route

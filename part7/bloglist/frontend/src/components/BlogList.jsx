@@ -1,12 +1,15 @@
+import { List, ListItem, ListItemText } from '@mui/material'
 import Blog from './Blog'
 
 const BlogList = ({ blogs, user }) => {
   return (
-    <div>
+    <List>
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} user={user} />
+        <ListItem key={blog.id}>
+          <ListItemText primary={<Blog blog={blog} user={user} />} />
+        </ListItem>
       ))}
-    </div>
+    </List>
   )
 }
 

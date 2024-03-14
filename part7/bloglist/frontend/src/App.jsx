@@ -6,7 +6,7 @@ import {
   Route,
   Navigate,
 } from 'react-router-dom'
-import { Typography } from '@mui/material'
+import { Typography, Container } from '@mui/material'
 import BlogList from './components/BlogList'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
@@ -32,7 +32,9 @@ const App = () => {
 
   return (
     <Router>
-      <div>
+      <Container
+        sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+      >
         {user === null ? (
           <>
             <Typography variant="h4" sx={{ marginTop: 2, marginBottom: 2 }}>
@@ -67,7 +69,7 @@ const App = () => {
             </Routes>
           </>
         )}
-      </div>
+      </Container>
     </Router>
   )
 }
